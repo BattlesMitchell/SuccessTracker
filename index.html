@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Success Tracker</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+	
+	<script type="text/javascript" src="jquery.canvasjs.min.js"></script>
+	
+	<script src="main.js"></script>
+  
+</head>
+
+<body ng-app="success_tracker">
+	<div ng-controller="STController" ng-init='load()'>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<div class="navbar-header">	
+			</div>
+		  </div>
+		  <h3 class="pull-left">The Jesse Herfel Real Estate Group <small><b><font color="green">Success Tracker</font></b></small></h3>
+		  <div class="pull-right">
+			<ul class="nav nav-pills pull-right">
+				<li role="presentation" class="active" ng-click="homeData()" id="home"><a href="#">Home</a></li>
+				<li role="presentation" ng-click="inputData()" id="inputData"><a href="#">Input Data</a></li>
+				<li role="presentation" id="contact"><a href="#">Contact</a></li>
+				<li role="presentation" id="about"><a href="#">About</a></li>
+				<li role="presentation" id="administration"><a href="#">Administration</a></li>
+			</ul>
+		  </div>
+		</nav>
+
+		<div id="statistics-wrapper" ng-show="statistics">
+			<div class="dropdown pull-left">
+			  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">List of Available Users
+			  <span class="caret"></span></button>
+			  <ul class="dropdown-menu" id="dropdown-menu">
+				<li ng-repeat="user in userList" ng-click="getUserStatistics(user)" class="user_name"><a href="#">{{user}}</a></li>
+			  </ul>
+			</div>
+			
+			<button class="btn btn-primary pull-left" type="button" ng-click="showAll()">Show All Data</button>
+			
+			<div class="dropdown pull-right">
+			  <button class="btn btn-warning dropdown-toggle" type="button" data-toggle="dropdown">Right hand side of the ratio
+			  <span class="caret"></span></button>
+			  <ul class="dropdown-menu" id="dropdown-menu">
+				<li ng-repeat="selectedRightData in rightDataList" ng-click="changeGatheredStatistics(failTruthy, selectedRightData)" class="user_name"><a href="#">{{selectedRightData}}</a></li>
+			  </ul>
+			</div>
+			
+			<div class="dropdown pull-right">
+			  <button class="btn btn-warning dropdown-toggle" type="button" data-toggle="dropdown">Left hand side of the ratio
+			  <span class="caret"></span></button>
+			  <ul class="dropdown-menu" id="dropdown-menu">
+				<li ng-repeat="selectedLeftData in leftDataList" ng-click="changeGatheredStatistics(selectedLeftData, failTruthy)" class="user_name"><a href="#">{{selectedLeftData}}</a></li>
+			  </ul>
+			</div>
+			
+
+			<br><br><<br>
+			
+			<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+		</div>
+		
+		<div id="input-wrapper" ng-show="input" class="ng-hide">
+		  <form name="inputForm">
+			<h4><b>Input new statics</b></h4>
+			<label for="basic-url">Enter your name</label>
+			<div class="input-group">
+			  <span class="input-group-addon" id="basic-addon3">Name</span>
+			  <input ng-model="name" type="text" class="form-control" id="name" aria-describedby="name">
+			</div>
+			<br>
+			<label for="basic-url">Enter the date of the calls</label>
+			<div class="input-group">
+			  <span class="input-group-addon">Date</span>
+			  <input ng-model="date" type="date" id="date" class="form-control" aria-label="date">
+			</div>
+			<br>
+			<label for="basic-url">Enter the number of dials</label>
+			<div class="input-group">
+			  <span class="input-group-addon">Dials</span>
+			  <input ng-model="dials" type="number" id="dials" class="form-control" aria-label="dials">
+			</div>
+			<br>
+			<label for="basic-url">Enter the number of contacts</label>
+			<div class="input-group">
+			  <span class="input-group-addon">Contacts</span>
+			  <input ng-model="contacts" type="number" id="contacts" class="form-control" aria-label="contacts">
+			</div>
+			<br>
+			<label for="basic-url">Enter the number of nurtures</label>
+			<div class="input-group">
+			  <span class="input-group-addon">Nurtures</span>
+			  <input ng-model="nurtures" type="number" id="nurtures" class="form-control" aria-label="nurtures">
+			</div>
+			<br>
+			<label for="basic-url">Enter the number of appointments</label>
+			<pre>inputForm.appointments.$error = {{inputForm.appointments.$error | json}}
+			<div class="input-group">
+			  <span class="input-group-addon">Appointments</span>
+			  <input ng-minlength="1" ng-maxlength="9999" required ng-model="appointments" type="number" id="appointments" class="form-control" aria-label="appointments" name="appointments">
+			</div>
+			<br>
+			<button class="btn btn-primary" ng-click="enterNewData()">Input Data</button>
+			<div ng-messages="inputForm.appointments.$error" style="color:maroon" role="alert">
+			  <div ng-message="required">You did not enter a field</div>
+			  <div ng-message="minlength">Your field is too short</div>
+			  <div ng-message="maxlength">Your field is too long</div>
+			</div>
+		  </form>
+		</div>
+  </div>
+</body>
+
+</html>
