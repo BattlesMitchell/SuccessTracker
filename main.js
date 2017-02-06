@@ -1,6 +1,12 @@
-var app = angular.module('success_tracker', []);
+(function(angular){
+	'use strict';
+var app = angular.module('success_tracker', ['ngMessages', 'angular-growl']);
 
-app.controller('STController', ['$window', '$scope', function($window, $scope) {
+app.config(['growlProvider', function (growlProvider) {
+  growlProvider.globalTimeToLive(3000);
+}]);
+
+app.controller('STController', ['$window', '$scope', 'growl', function($window, $scope, growl) {
   $scope.input = false;
   $scope.statistics = true;
   $scope.failTruthy = "";
@@ -8,6 +14,7 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
   $scope.leftDataList = ["dials", "contacts", "nurtures", "appointments"];
   $scope.rightDataList = ["dials", "contacts", "nurtures", "appointments"];
   $scope.statistics = [];
+  $scope.errors = {"appointments" : ["required", "minlength", "maxlength"]};
   $scope.defaultGraphData = [
 				{ x: 30,  y: 5.2 },
 				{ x: 20, y: 3.4 },
@@ -17,8 +24,15 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
 			];
   
   $scope.load = function(){
+	  console.log("starting");
 	$scope.getUserList();
 	constructGraph("dials", "appointments", null, "line");
+  }
+  
+  $scope.growlTest = function(){
+	  console.log("Growling");
+	  var config = {};
+	  growl.success("<b>I'm</b> a success message", config);
   }
   
   $scope.inputData = function(){
@@ -90,8 +104,19 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
   }
   
   $scope.getUserStatistics = function(user, rightData, leftData){
+	  if(!rightData){
+		  rightData = $scope.rightData;
+	  }
+	  
+	  if(!leftData){
+		  leftData = $scope.leftData;
+	  }
+	  
 	  if(user){
 		$scope.userName = user;
+		if(user == "all"){
+			$scope.userName = "The Jesse Herfel Group";
+		}
 		$.ajax({
 		  method: "GET",
 		  url: "REST.php",
@@ -99,7 +124,7 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
 		  success: function(data){
 			  data = JSON.parse(data);
 			  $scope.statistics = data;
-			  constructGraph("dials", "appointments", data, "line");
+			  constructGraph(rightData, leftData, data, "line");
 		  },
 		  error: function(data){
 			  console.log("failure");
@@ -107,6 +132,10 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
 		  }
 		});
 	  }
+  }
+  
+  $scope.showAll = function(){
+	  $scope.getUserStatistics("all");
   }
     
   $scope.enterNewData = function(){
@@ -171,9 +200,9 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
 	  var current = Date.now();	  
 	  var millisInDay = 86400000;
 	  
-	  age = current - age;
+	  age = (current - age);
 	  
-	  return age / millisInDay;
+	  return (age / millisInDay);
   }
   
   function updateGraphData(data, ratio_denominator, ratio_numerator){
@@ -208,7 +237,7 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
   }
   
   function constructGraph(ratio_denominator, ratio_numerator, initial_data, type){
-	var title = {text: ratio_numerator + " over " + ratio_denominator + " for " + $scope.userName};
+	var title = {text: ratio_numerator + " per " + ratio_denominator + " for " + $scope.userName};
 	var dataPoints = null;
 	if(initial_data){
 		dataPoints = updateGraphData(initial_data, ratio_denominator, ratio_numerator);
@@ -229,3 +258,4 @@ app.controller('STController', ['$window', '$scope', function($window, $scope) {
   }
   
 }]);
+})(window.angular);

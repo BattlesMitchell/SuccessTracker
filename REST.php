@@ -62,8 +62,12 @@
 		$dbconn = pg_connect("host=localhost dbname=postgres user=battlesm password=password")
 			or die('Could not connect: ' . pg_last_error());
 
+		$query = "SELECT * FROM successes";
 		// Performing SQL query
-		$query = "SELECT * FROM successes WHERE name = '" . $name . "'";
+		if($name != "all"){
+			$query = $query . " WHERE name = '" . $name . "'";
+		}
+		
 		$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 		$value_arr = array ();
 		

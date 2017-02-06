@@ -15,11 +15,38 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+	<!--angular-->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+	<!-- Load ngMessages -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.0/angular-messages.min.js"></script>
 	
 	<script type="text/javascript" src="jquery.canvasjs.min.js"></script>
 	
+	<link href="angular-growl.css" rel="stylesheet">
+    <script src="angular-growl.js"></script>
+	
+	<!-- <script type="text/javascript" src="angular-growl-notifications.js"></script> -->
+	
 	<script src="main.js"></script>
+	
+	<style>
+	growl-notifications {
+		position: fixed;
+		top: 150px;
+		right: 10px;
+		z-index: 1000;
+	}
+
+	growl-notifications growl-notification {
+		background: rgba(0,0,0,0.6);
+		color: white;
+		padding: 15px 30px;
+		width: 200px;
+		display: block;
+		border-radius: 5px;
+		margin-top: 15px;
+	}
+	</style>
   
 </head>
 
@@ -43,6 +70,7 @@
 		</nav>
 
 		<div id="statistics-wrapper" ng-show="statistics">
+			<div growl=""></div><button ng-click="growlTest()" class="btn btn-default">Notify</button>
 			<div class="dropdown pull-left">
 			  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">List of Available Users
 			  <span class="caret"></span></button>
@@ -81,46 +109,72 @@
 			<label for="basic-url">Enter your name</label>
 			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon3">Name</span>
-			  <input ng-model="name" type="text" class="form-control" id="name" aria-describedby="name">
+			  <input ng-minlength="2" ng-maxlength="9999" ng-model="name" name="name" required="" ng-model="name" type="text" class="form-control" id="name" aria-describedby="name">
+			</div>
+			<div ng-messages="inputForm.name.$error" style="color:maroon" role="alert">
+				  <div ng-message="required">You did not enter a field</div>
+				  <div ng-message="minlength">Your field is too short</div>
+				  <div ng-message="maxlength">Your field is too long</div>
 			</div>
 			<br>
 			<label for="basic-url">Enter the date of the calls</label>
 			<div class="input-group">
 			  <span class="input-group-addon">Date</span>
-			  <input ng-model="date" type="date" id="date" class="form-control" aria-label="date">
+			  <input ng-minlength="1" ng-maxlength="9999" ng-model="date" name="date" required="" ng-model="date" type="date" id="date" class="form-control" aria-label="date">
+			</div>
+			<div ng-messages="inputForm.date.$error" style="color:maroon" role="alert">
+				  <div ng-message="required">You did not enter a field</div>
+				  <div ng-message="minlength">Your field is too short</div>
+				  <div ng-message="maxlength">Your field is too long</div>
 			</div>
 			<br>
 			<label for="basic-url">Enter the number of dials</label>
 			<div class="input-group">
 			  <span class="input-group-addon">Dials</span>
-			  <input ng-model="dials" type="number" id="dials" class="form-control" aria-label="dials">
+			  <input ng-minlength="1" ng-maxlength="9999" ng-model="dials" name="dials" required="" ng-model="dials" type="number" id="dials" class="form-control" aria-label="dials">
+			</div>
+			<div ng-messages="inputForm.dials.$error" style="color:maroon" role="alert">
+				  <div ng-message="required">You did not enter a field</div>
+				  <div ng-message="minlength">Your field is too short</div>
+				  <div ng-message="maxlength">Your field is too long</div>
 			</div>
 			<br>
 			<label for="basic-url">Enter the number of contacts</label>
 			<div class="input-group">
 			  <span class="input-group-addon">Contacts</span>
-			  <input ng-model="contacts" type="number" id="contacts" class="form-control" aria-label="contacts">
+			  <input ng-minlength="1" ng-maxlength="9999" ng-model="contacts" name="contacts" required="" ng-model="contacts" type="number" id="contacts" class="form-control" aria-label="contacts">
 			</div>
+			<div ng-messages="inputForm.contacts.$error" style="color:maroon" role="alert">
+				  <div ng-message="required">You did not enter a field</div>
+				  <div ng-message="minlength">Your field is too short</div>
+				  <div ng-message="maxlength">Your field is too long</div>
+				</div>
 			<br>
 			<label for="basic-url">Enter the number of nurtures</label>
 			<div class="input-group">
 			  <span class="input-group-addon">Nurtures</span>
-			  <input ng-model="nurtures" type="number" id="nurtures" class="form-control" aria-label="nurtures">
+			  <input ng-minlength="1" ng-maxlength="9999" ng-model="nurtures" name="nurtures" required="" ng-model="nurtures" type="number" id="nurtures" class="form-control" aria-label="nurtures">
+			</div>
+			<div ng-messages="inputForm.nurtures.$error" style="color:maroon" role="alert">
+				  <div ng-message="required">You did not enter a field</div>
+				  <div ng-message="minlength">Your field is too short</div>
+				  <div ng-message="maxlength">Your field is too long</div>
 			</div>
 			<br>
 			<label for="basic-url">Enter the number of appointments</label>
-			<pre>inputForm.appointments.$error = {{inputForm.appointments.$error | json}}
+			<!-- <pre>inputForm.appointments.$error = {{inputForm.appointments.$error | json}} -->
 			<div class="input-group">
 			  <span class="input-group-addon">Appointments</span>
-			  <input ng-minlength="1" ng-maxlength="9999" required ng-model="appointments" type="number" id="appointments" class="form-control" aria-label="appointments" name="appointments">
+			  <input ng-minlength="1" ng-maxlength="9999" required="" ng-model="appointments" type="number" id="appointments" class="form-control" aria-label="appointments" name="appointments">
+			</div>
+			<div ng-messages="inputForm.appointments.$error" style="color:maroon" role="alert">
+				<div ng-message="required">You did not enter a field</div>
+				<div ng-message="minlength">Your field is too short</div>
+				<div ng-message="maxlength">Your field is too long</div>
 			</div>
 			<br>
 			<button class="btn btn-primary" ng-click="enterNewData()">Input Data</button>
-			<div ng-messages="inputForm.appointments.$error" style="color:maroon" role="alert">
-			  <div ng-message="required">You did not enter a field</div>
-			  <div ng-message="minlength">Your field is too short</div>
-			  <div ng-message="maxlength">Your field is too long</div>
-			</div>
+
 		  </form>
 		</div>
   </div>
