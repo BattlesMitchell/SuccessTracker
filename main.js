@@ -463,9 +463,12 @@ app.controller('STController', ['$window', '$scope', 'growl', function($window, 
 	  var denominator  = type_position(ratio_denominator);
 	  var numerator = type_position(ratio_numerator);
 	  
+	  var originalDataPointLength = 0;
+	  if(data.length > 0){
+		originalDataPointLength = data[0].length;
+	  }
 	  
-	  
-	  var y_axis_values = [];
+	  //var y_axis_values = [];
 	  var dataPoints = [];
 
 	  for(var i = 0; i < data.length; ++i){
@@ -483,10 +486,12 @@ app.controller('STController', ['$window', '$scope', 'growl', function($window, 
 			  bottom = data[i][denominator];
 		  }
 		  
-		  y_axis_values.push(top / bottom);
+		  data[i].push(top / bottom);
+		  
+		  //y_axis_values.push(top / bottom);
 		  //y_axis_values.push(data[i][numerator] / data[i][denominator]);
 	  }
-	  y_axis_values.sort();
+	  //y_axis_values.sort();
 	  
 	  //var labels
 	  console.dir(data);
@@ -495,9 +500,10 @@ app.controller('STController', ['$window', '$scope', 'growl', function($window, 
 	  
 	  console.dir(data);
 	  
-	  for(var i = 0; i < y_axis_values.length; ++i){
+	  for(var i = 0; i < data.length; ++i){
 		  //dataPoints.push({x: decodeDate(data[i][1]), y: (Math.round(y_axis_values[i] * 100) / 100)});
-		  dataPoints.push({x: getDateFromMillis(data[i][1]), y: ((Math.round(y_axis_values[i] * 100) / 100)), 'meta': {'name': data[i][0], 'numerator': {'value': data[i][numerator], 'name': ratio_numerator}, 'denominator': {'value': data[i][denominator], 'name': ratio_denominator}}});
+		  //dataPoints.push({x: getDateFromMillis(data[i][1]), y: ((Math.round(y_axis_values[i] * 100) / 100)), 'meta': {'name': data[i][0], 'numerator': {'value': data[i][numerator], 'name': ratio_numerator}, 'denominator': {'value': data[i][denominator], 'name': ratio_denominator}}});
+		  dataPoints.push({x: getDateFromMillis(data[i][1]), y: ((Math.round(data[i][originalDataPointLength] * 100) / 100)), 'meta': {'name': data[i][0], 'numerator': {'value': data[i][numerator], 'name': ratio_numerator}, 'denominator': {'value': data[i][denominator], 'name': ratio_denominator}}});
 	  }
 	  
 	  //console.dir(dataPoints);	
